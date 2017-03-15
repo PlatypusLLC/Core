@@ -162,7 +162,13 @@ public class UdpConstants {
     public static SensorData readSensorData(DataInputStream in) throws IOException {
         SensorData sensor = new SensorData();
         sensor.channel = in.readInt();
-        sensor.type = SensorType.values()[Math.max(in.readByte(), SensorType.values().length - 1)];
+        byte type_index = in.readByte();
+        if (type_index < 0) {
+            sensor.type = SensorType.UNKNOWN;
+        }
+        else {
+            sensor.type = SensorType.values()[Math.min(type_index, SensorType.values().length - 1)];
+        }
         sensor.data = new double[in.readInt()];
         for (int i = 0; i < sensor.data.length; ++i)
             sensor.data[i] = in.readDouble();
