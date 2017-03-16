@@ -4,7 +4,7 @@
 
   <groupId>com.platypus.crw</groupId>
   <artifactId>platypus-core</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>platypus-core</name>
@@ -146,12 +146,12 @@
   
   <repositories>
     <repository>
-        <id>psigen-snapshots</id>
-        <url>https://raw.github.com/PlatypusLLC/maven-repository/master/snapshots</url>
-    </repository>
-    <repository>
-        <id>psigen-releases</id>
-        <url>https://raw.github.com/PlatypusLLC/maven-repository/master/releases</url>
+        <id>core-mvn-repo</id>
+        <url>https://raw.github.com/PlatypusLLC/core/mvn-repo</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
     </repository>
   </repositories>
 </project>
