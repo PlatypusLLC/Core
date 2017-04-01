@@ -80,7 +80,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testShutdown() {
-        System.out.println("shutdown");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         instance.shutdown();
 
@@ -106,8 +105,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testSetVehicleService() {
-        System.out.println("setVehicleService");
-
         UdpVehicleServer instance = new UdpVehicleServer();
 
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
@@ -125,7 +122,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testGetVehicleService() {
-        System.out.println("getVehicleService");
         UdpVehicleServer instance = new UdpVehicleServer();
 
         instance.setVehicleService(serviceAddress);
@@ -140,7 +136,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testAddPoseListener() {
-        System.out.println("addPoseListener");
         final CountDownLatch latch = new CountDownLatch(1);
 
         // Register a new pose listener on this server
@@ -168,7 +163,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testRemovePoseListener() {
-        System.out.println("removePoseListener");
         PoseListener l = null;
         //FunctionObserver<Void> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
@@ -182,7 +176,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testSetGetPose() {
-        System.out.println("set/getPose");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
 
         // Generate a random pose
@@ -195,8 +188,9 @@ public class UdpVehicleServerTest {
         instance.setPose(pose, null);
         UtmPose gp = server.getPose();
 
+        assertNotNull("Pose returned from server was null.", gp);
         assertTrue("Poses didn't match enough.", pose.pose.getEuclideanDistance(gp.pose) < 1e-6);
-        assertEquals(pose.origin, gp.origin);
+        assertEquals("Poses were in different zones", pose.origin, gp.origin);
 
         instance.shutdown();
     }
@@ -206,7 +200,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testAddImageListener() {
-        System.out.println("addImageListener");
         final CountDownLatch latch = new CountDownLatch(1);
 
         // Register a new pose listener on this server
@@ -235,7 +228,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testRemoveImageListener() {
-        System.out.println("removeImageListener");
         ImageListener l = null;
         FunctionObserver<Void> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
@@ -249,7 +241,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testCaptureImage() throws IOException {
-        System.out.println("captureImage");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
 
         // Generate a random image size
@@ -278,7 +269,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testAddCameraListener() {
-        System.out.println("addCameraListener");
         final CountDownLatch latch = new CountDownLatch(1);
 
         // Register a new pose listener on this server
@@ -307,7 +297,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testRemoveCameraListener() {
-        System.out.println("removeCameraListener");
         CameraListener l = null;
         //FunctionObserver<Void> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
@@ -321,7 +310,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testStartCamera() {
-        System.out.println("startCamera");
         int numFrames = 0;
         double interval = 0.0;
         int width = 0;
@@ -338,7 +326,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testStopCamera() {
-        System.out.println("stopCamera");
         FunctionObserver<Void> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
         //instance.stopCamera(obs);
@@ -351,7 +338,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testGetCameraStatus() {
-        System.out.println("getCameraStatus");
         FunctionObserver<CameraState> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
         //instance.getCameraStatus(obs);
@@ -364,7 +350,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testAddSensorListener() {
-        System.out.println("addSensorListener");
         final CountDownLatch latch = new CountDownLatch(1);
 
         // Register a new pose listener on this server
@@ -392,7 +377,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testRemoveSensorListener() {
-        System.out.println("removeSensorListener");
         int channel = 0;
         SensorListener l = null;
         FunctionObserver<Void> obs = null;
@@ -407,7 +391,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testSetSensorType() {
-        System.out.println("setSensorType");
         int channel = 0;
         SensorType type = null;
         FunctionObserver<Void> obs = null;
@@ -422,7 +405,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testGetSensorType() {
-        System.out.println("getSensorType");
         int channel = 0;
         FunctionObserver<SensorType> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
@@ -436,7 +418,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testGetNumSensors() {
-        System.out.println("getNumSensors");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
 
@@ -452,7 +433,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testAddVelocityListener() {
-        System.out.println("addVelocityListener");
         final CountDownLatch latch = new CountDownLatch(1);
 
         // Register a new pose listener on this server
@@ -480,7 +460,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testRemoveVelocityListener() {
-        System.out.println("removeVelocityListener");
         VelocityListener l = null;
         FunctionObserver<Void> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
@@ -494,7 +473,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testSetVelocity() {
-        System.out.println("setVelocity");
         Twist velocity = null;
         FunctionObserver<Void> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
@@ -508,7 +486,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testGetVelocity() {
-        System.out.println("getVelocity");
         FunctionObserver<Twist> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
         //instance.getVelocity(obs);
@@ -521,7 +498,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testAddWaypointListener() {
-        System.out.println("addWaypointListener");
         final CountDownLatch latch = new CountDownLatch(1);
 
         // Register a new pose listener on this server
@@ -550,7 +526,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testRemoveWaypointListener() {
-        System.out.println("removeWaypointListener");
         WaypointListener l = null;
         FunctionObserver<Void> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
@@ -564,7 +539,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testStartWaypoints() {
-        System.out.println("startWaypoints");
         UtmPose[] waypoints = null;
         String controller = "";
         FunctionObserver<Void> obs = null;
@@ -579,7 +553,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testStopWaypoints() {
-        System.out.println("stopWaypoints");
         FunctionObserver<Void> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
         //instance.stopWaypoints(obs);
@@ -592,7 +565,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testGetWaypoints() {
-        System.out.println("getWaypoints");
         FunctionObserver<UtmPose[]> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
         //instance.getWaypoints(obs);
@@ -605,7 +577,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testGetWaypointStatus() {
-        System.out.println("getWaypointStatus");
         FunctionObserver<WaypointState> obs = null;
         //UdpVehicleServer instance = new UdpVehicleServer();
         //instance.getWaypointStatus(obs);
@@ -618,7 +589,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testIsConnected() {
-        System.out.println("isConnected");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
 
@@ -631,7 +601,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testSetIsAutonomous() {
-        System.out.println("set/isAutonomous");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
 
@@ -650,7 +619,6 @@ public class UdpVehicleServerTest {
      */
     @Test
     public void testSetGetGains() {
-        System.out.println("set/getGains");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
 
         // Generate a random gain vector and channel
