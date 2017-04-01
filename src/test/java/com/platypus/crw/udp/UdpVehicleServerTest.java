@@ -43,12 +43,12 @@ import static org.junit.Assert.*;
  * @author Prasanna Velagapudi <psigen@gmail.com>
  */
 public class UdpVehicleServerTest {
-    
+
     UdpVehicleService service;
     SimpleBoatSimulator sbs;
     InetSocketAddress serviceAddress;
     Random rnd;
-    
+
     public UdpVehicleServerTest() {
     }
 
@@ -59,16 +59,16 @@ public class UdpVehicleServerTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-    
+
     @Before
     public void setUp() {
         sbs = new SimpleBoatSimulator();
         service = new UdpVehicleService(sbs);
         int port = ((InetSocketAddress)service.getSocketAddress()).getPort();
-        serviceAddress = new InetSocketAddress("localhost", port);
+        serviceAddress = new InetSocketAddress("127.0.0.1", port);
         rnd = new Random();
     }
-    
+
     @After
     public void tearDown() {
         service.shutdown();
@@ -83,10 +83,10 @@ public class UdpVehicleServerTest {
         System.out.println("shutdown");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         instance.shutdown();
-        
+
         // Make sure the UDP socket was closed
         assertTrue(instance._udpServer._socket.isClosed());
-        
+
         // Make sure the timer processes are shut down
         try {
             instance._timer.schedule(new TimerTask() {
@@ -97,27 +97,27 @@ public class UdpVehicleServerTest {
             }, 0);
             fail("Timer was not shut down.");
         } catch (IllegalStateException e) {
-            
+
         }
     }
-    
+
     /**
      * Test of setVehicleService method, of class UdpVehicleServer.
      */
     @Test
     public void testSetVehicleService() {
         System.out.println("setVehicleService");
-        
+
         UdpVehicleServer instance = new UdpVehicleServer();
-        
+
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
-        assertEquals("Server reports connected to null service", 
+        assertEquals("Server reports connected to null service",
                 false, server.isConnected());
-        
+
         instance.setVehicleService(serviceAddress);
         assertEquals("Server reports not connected to service",
                 true, server.isConnected());
-        
+
         instance.shutdown();
     }
     /**
@@ -127,11 +127,11 @@ public class UdpVehicleServerTest {
     public void testGetVehicleService() {
         System.out.println("getVehicleService");
         UdpVehicleServer instance = new UdpVehicleServer();
-        
+
         instance.setVehicleService(serviceAddress);
-        assertEquals("SocketAddress was not set correctly", 
+        assertEquals("SocketAddress was not set correctly",
                 serviceAddress, instance.getVehicleService());
-        
+
         instance.shutdown();
     }
 
@@ -142,7 +142,7 @@ public class UdpVehicleServerTest {
     public void testAddPoseListener() {
         System.out.println("addPoseListener");
         final CountDownLatch latch = new CountDownLatch(1);
-        
+
         // Register a new pose listener on this server
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
@@ -152,14 +152,14 @@ public class UdpVehicleServerTest {
                 latch.countDown();
             }
         });
-        
+
         // If we haven't received a pose in a full second, something is wrong
         try {
             assertTrue("Did not receive pose update.", latch.await(2, TimeUnit.SECONDS));
         } catch(InterruptedException e) {
             fail("Did not receive pose update.");
         }
-        
+
         instance.shutdown();
     }
 
@@ -184,20 +184,20 @@ public class UdpVehicleServerTest {
     public void testSetGetPose() {
         System.out.println("set/getPose");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
-        
+
         // Generate a random pose
         UtmPose pose = new UtmPose(
-                new Pose3D(rnd.nextDouble(), rnd.nextDouble(), rnd.nextDouble(), 
+                new Pose3D(rnd.nextDouble(), rnd.nextDouble(), rnd.nextDouble(),
                         rnd.nextDouble(), rnd.nextDouble(), rnd.nextDouble()),
                 new Utm(12, rnd.nextBoolean()));
-        
+
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
         instance.setPose(pose, null);
         UtmPose gp = server.getPose();
-        
+
         assertTrue("Poses didn't match enough.", pose.pose.getEuclideanDistance(gp.pose) < 1e-6);
         assertEquals(pose.origin, gp.origin);
-        
+
         instance.shutdown();
     }
 
@@ -208,7 +208,7 @@ public class UdpVehicleServerTest {
     public void testAddImageListener() {
         System.out.println("addImageListener");
         final CountDownLatch latch = new CountDownLatch(1);
-        
+
         // Register a new pose listener on this server
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
@@ -219,14 +219,14 @@ public class UdpVehicleServerTest {
             }
         });
         server.startCamera(2, 1.0, 640, 480);
-        
+
         // If we haven't received a pose in a full second, something is wrong
         try {
             assertTrue("Did not receive image update.", latch.await(2, TimeUnit.SECONDS));
         } catch(InterruptedException e) {
             fail("Did not receive image update.");
         }
-        
+
         instance.shutdown();
     }
 
@@ -251,17 +251,17 @@ public class UdpVehicleServerTest {
     public void testCaptureImage() throws IOException {
         System.out.println("captureImage");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
-        
+
         // Generate a random image size
         int width = rnd.nextInt(64) + 1;
         int height = rnd.nextInt(64) + 1;
-        
+
         // Check that we got an image of this size
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
         byte[] bytes = server.captureImage(width, height);
         if (bytes == null)
             fail("Did not receive an image.");
-        
+
         try {
             BufferedImage image = ImageIO.read(new java.io.ByteArrayInputStream(bytes));
             assertEquals("Width is wrong.", image.getWidth(), width);
@@ -269,7 +269,7 @@ public class UdpVehicleServerTest {
         } catch (IOException e) {
             fail("Did not receive valid image.");
         }
-        
+
         instance.shutdown();
     }
 
@@ -280,7 +280,7 @@ public class UdpVehicleServerTest {
     public void testAddCameraListener() {
         System.out.println("addCameraListener");
         final CountDownLatch latch = new CountDownLatch(1);
-        
+
         // Register a new pose listener on this server
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
@@ -291,14 +291,14 @@ public class UdpVehicleServerTest {
             }
         });
         server.startCamera(2, 1.0, 640, 480);
-        
+
         // If we haven't received a pose in a full second, something is wrong
         try {
             assertTrue("Did not receive camera update.", latch.await(2, TimeUnit.SECONDS));
         } catch(InterruptedException e) {
             fail("Did not receive camera update.");
         }
-        
+
         instance.shutdown();
     }
 
@@ -366,7 +366,7 @@ public class UdpVehicleServerTest {
     public void testAddSensorListener() {
         System.out.println("addSensorListener");
         final CountDownLatch latch = new CountDownLatch(1);
-        
+
         // Register a new pose listener on this server
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
@@ -376,14 +376,14 @@ public class UdpVehicleServerTest {
                 latch.countDown();
             }
         });
-        
+
         // If we haven't received a pose in a full second, something is wrong
         try {
             assertTrue("Did not receive sensor update.", latch.await(2, TimeUnit.SECONDS));
         } catch(InterruptedException e) {
             fail("Did not receive sensor update.");
         }
-        
+
         instance.shutdown();
     }
 
@@ -439,11 +439,11 @@ public class UdpVehicleServerTest {
         System.out.println("getNumSensors");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
-        
+
         // Check that we got the right number of sensors
         int nSensors = server.getNumSensors();
         assertEquals("Incorrect sensor count.", sbs._sensorTypes.length, nSensors);
-        
+
         instance.shutdown();
     }
 
@@ -454,7 +454,7 @@ public class UdpVehicleServerTest {
     public void testAddVelocityListener() {
         System.out.println("addVelocityListener");
         final CountDownLatch latch = new CountDownLatch(1);
-        
+
         // Register a new pose listener on this server
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
@@ -464,14 +464,14 @@ public class UdpVehicleServerTest {
                 latch.countDown();
             }
         });
-        
+
         // If we haven't received a pose in a full second, something is wrong
         try {
             assertTrue("Did not receive velocity update.", latch.await(2, TimeUnit.SECONDS));
         } catch(InterruptedException e) {
             fail("Did not receive velocity update.");
         }
-        
+
         instance.shutdown();
     }
 
@@ -523,7 +523,7 @@ public class UdpVehicleServerTest {
     public void testAddWaypointListener() {
         System.out.println("addWaypointListener");
         final CountDownLatch latch = new CountDownLatch(1);
-        
+
         // Register a new pose listener on this server
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
@@ -534,14 +534,14 @@ public class UdpVehicleServerTest {
             }
         });
         server.startWaypoints(new UtmPose[]{new UtmPose()}, "STOP");
-        
+
         // If we haven't received a pose in a full second, something is wrong
         try {
             assertTrue("Did not receive waypoint update.", latch.await(2, TimeUnit.SECONDS));
         } catch(InterruptedException e) {
             fail("Did not receive waypoint update.");
         }
-        
+
         instance.shutdown();
     }
 
@@ -621,7 +621,7 @@ public class UdpVehicleServerTest {
         System.out.println("isConnected");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
-        
+
         // Since we are using a test server, it should always be connected
         assertTrue("Server claimed it was not connected", server.isConnected());
     }
@@ -634,14 +634,14 @@ public class UdpVehicleServerTest {
         System.out.println("set/isAutonomous");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
-        
+
         // Set to autonomous and back
         server.setAutonomous(true);
         assertTrue("setAutonomy failed to turn on.", server.isAutonomous());
-        
+
         server.setAutonomous(false);
         assertFalse("setAutonomy failed to turn off.", server.isAutonomous());
-        
+
         instance.shutdown();
     }
 
@@ -652,21 +652,21 @@ public class UdpVehicleServerTest {
     public void testSetGetGains() {
         System.out.println("set/getGains");
         UdpVehicleServer instance = new UdpVehicleServer(serviceAddress);
-        
+
         // Generate a random gain vector and channel
         int axis = rnd.nextInt(6);
         double[] gains = new double[3];
         for (int i = 0; i < gains.length; ++i) {
             gains[i] = rnd.nextDouble();
         }
-        
+
         // Set the gain vector
         VehicleServer server = AsyncVehicleServer.Util.toSync(instance);
         server.setGains(axis, gains);
         double[] pg = server.getGains(axis);
-        
+
         assertTrue("Gains do not match: expected " + Arrays.toString(gains) + ", actual " + Arrays.toString(pg), Arrays.equals(gains, pg));
-        
+
         instance.shutdown();
     }
 }
