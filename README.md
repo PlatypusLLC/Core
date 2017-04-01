@@ -1,5 +1,4 @@
-Core
-====
+# Core [![Build Status](https://travis-ci.org/platypusllc/core.svg?branch=master)](https://travis-ci.org/platypusllc/core)
 
 Core libraries and implementation for all Platypus vehicles
 
